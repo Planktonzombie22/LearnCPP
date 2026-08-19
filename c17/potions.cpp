@@ -52,10 +52,11 @@ public:
 
 int main()
 {
-    std::cout << "Welcome to Roscoe's potion emporium!";
+    std::cout << "Welcome to Roscoe's potion emporium!\n";
 
     Player player {};
     player.getName();
+    std::cout << "\n\n";
     shop();
 
      std::cout << "\nThanks for shopping at Roscoe's potion emporium!\n";
