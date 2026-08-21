@@ -84,15 +84,79 @@ public:
     }
 };
 
-int main()
+namespace Settings
+{
+    constexpr int dealer_stand { 17 };
+    constexpr int bust { 21 };
+}
+
+struct Player
+{
+    int score{};
+};
+
+bool playBlackjack()
 {
     Deck deck{};
-    std::cout << deck.dealCard() << ' ' << deck.dealCard() << ' ' << deck.dealCard() << '\n';
-
     deck.shuffle();
-    std::cout << deck.dealCard() << ' ' << deck.dealCard() << ' ' << deck.dealCard() << '\n';
 
-    return 0;
+    Player dealer{ deck.dealCard().value() };
+
+    std::cout << "The dealer is showing: " << dealer.score << '\n';
+
+    Player player { deck.dealCard().value() + deck.dealCard().value() };
+
+    std::cout << "You have score: " << player.score << '\n';
+
+    while (player.score < Settings::bust)
+    {
+        char action {};
+        std::cout << "(h) to hit, or (s) to stand: ";
+        std::cin >> action;
+        if (action == 's')
+        {
+            break;
+        }
+
+        Card card_dealt { deck.dealCard() };
+        std::cout << "You flip a " << card_dealt << ".  ";
+        player.score += card_dealt.value();
+        std::cout << "You now have: " << player.score << '\n';
+    }
+
+    if (player.score > Settings::bust)
+    {
+        std::cout << "You went bust!\n";
+        return false;
+    }
+
+    while (dealer.score < Settings::dealer_stand)
+    {
+        Card card_dealt { deck.dealCard() };
+        std::cout << "The dealer flips a " << card_dealt << ".  ";
+        dealer.score += card_dealt.value();
+        std::cout << "They now have: " << dealer.score << '\n';
+    }
+
+    if (dealer.score > Settings::bust)
+    {
+        std::cout << "The dealer went bust!\n";
+        return true;
+    }
+
+    return (player.score > dealer.score);
+}
+
+int main()
+{
+    if (playBlackjack())
+    {
+        std::cout << "You win!\n";
+    }
+    else
+    {
+        std::cout << "You lose!\n";
+    }
 
     return 0;
 }
